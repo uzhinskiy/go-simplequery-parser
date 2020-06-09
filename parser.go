@@ -6,19 +6,24 @@ import (
 )
 
 type Node interface {
-	isNode()
 	String() string
+	Value() string
+	Children() (Node, Node)
 }
 
 type (
-	oneSubNode  struct{ Node Node }
-	twoSubNodes struct{ Node1, Node2 Node }
-	valueNode   struct{ NodeValue string }
+	oneSubNode  struct{ node Node }
+	twoSubNodes struct{ node1, node2 Node }
+	valueNode   struct{ nodeValue string }
 )
 
-func (oneSubNode) isNode()  {}
-func (twoSubNodes) isNode() {}
-func (valueNode) isNode()   {}
+func (_ oneSubNode) Value() string  { return "" }
+func (_ twoSubNodes) Value() string { return "" }
+func (n valueNode) Value() string   { return n.nodeValue }
+
+func (n oneSubNode) Children() (Node, Node)  { return n.node, nil }
+func (n twoSubNodes) Children() (Node, Node) { return n.node1, n.node2 }
+func (_ valueNode) Children() (Node, Node)   { return nil, nil }
 
 type (
 	AND struct{ twoSubNodes }
@@ -34,17 +39,17 @@ type (
 	VAL struct{ valueNode }
 )
 
-func (n AND) String() string { return fmt.Sprintf("AND{%s,%s}", n.Node1, n.Node2) }
-func (n OR) String() string  { return fmt.Sprintf("OR{%s,%s}", n.Node1, n.Node2) }
-func (n NOT) String() string { return fmt.Sprintf("NOT{%s}", n.Node) }
-func (n LT) String() string  { return fmt.Sprintf("LT{%s,%s}", n.Node1, n.Node2) }
-func (n LTE) String() string { return fmt.Sprintf("LTE{%s,%s}", n.Node1, n.Node2) }
-func (n GT) String() string  { return fmt.Sprintf("GT{%s,%s}", n.Node1, n.Node2) }
-func (n GTE) String() string { return fmt.Sprintf("GTE{%s,%s}", n.Node1, n.Node2) }
-func (n EQ) String() string  { return fmt.Sprintf("EQ{%s,%s}", n.Node1, n.Node2) }
-func (n NE) String() string  { return fmt.Sprintf("NE{%s,%s}", n.Node1, n.Node2) }
-func (n ID) String() string  { return fmt.Sprintf("ID{%q}", n.NodeValue) }
-func (n VAL) String() string { return fmt.Sprintf("VAL{%q}", n.NodeValue) }
+func (n AND) String() string { return fmt.Sprintf("AND{%s,%s}", n.node1, n.node2) }
+func (n OR) String() string  { return fmt.Sprintf("OR{%s,%s}", n.node1, n.node2) }
+func (n NOT) String() string { return fmt.Sprintf("NOT{%s}", n.node) }
+func (n LT) String() string  { return fmt.Sprintf("LT{%s,%s}", n.node1, n.node2) }
+func (n LTE) String() string { return fmt.Sprintf("LTE{%s,%s}", n.node1, n.node2) }
+func (n GT) String() string  { return fmt.Sprintf("GT{%s,%s}", n.node1, n.node2) }
+func (n GTE) String() string { return fmt.Sprintf("GTE{%s,%s}", n.node1, n.node2) }
+func (n EQ) String() string  { return fmt.Sprintf("EQ{%s,%s}", n.node1, n.node2) }
+func (n NE) String() string  { return fmt.Sprintf("NE{%s,%s}", n.node1, n.node2) }
+func (n ID) String() string  { return fmt.Sprintf("ID{%q}", n.nodeValue) }
+func (n VAL) String() string { return fmt.Sprintf("VAL{%q}", n.nodeValue) }
 
 func parse(tokens []token) (Node, error) {
 	res := make([]interface{}, len(tokens))
@@ -112,9 +117,9 @@ func parse(tokens []token) (Node, error) {
 				tokenFound = true
 				switch tokenType {
 				case tokenTypeID:
-					res[i] = ID{valueNode{NodeValue: token.matched}}
+					res[i] = ID{valueNode{nodeValue: token.matched}}
 				case tokenTypeVAL:
-					res[i] = VAL{valueNode{NodeValue: token.matched}}
+					res[i] = VAL{valueNode{nodeValue: token.matched}}
 				default:
 					if i+1 >= len(res) {
 						return nil, fmt.Errorf("missing parameter for %s operator", tokenTypeString[tokenType])
@@ -126,7 +131,7 @@ func parse(tokens []token) (Node, error) {
 					res = append(res[:i+1], res[i+2:]...) // remove the (i+1)th element because it has become a sub node
 					switch tokenType {
 					case tokenTypeNOT:
-						res[i] = NOT{oneSubNode{Node: subNode1}}
+						res[i] = NOT{oneSubNode{node: subNode1}}
 					default:
 						if i == 0 {
 							return nil, fmt.Errorf("missing parameter for %s operator", tokenTypeString[tokenType])
