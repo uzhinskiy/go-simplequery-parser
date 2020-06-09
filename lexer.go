@@ -60,7 +60,7 @@ var tokenDefs = []tokenDefinition{
 	{tokenTypeID, regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_.-]*`)},
 	// tokenTypeVAL supports multiple types of values, e.g. integers, strings that are wrapped with ", regex that are wrapped with /
 	// and integers with string suffix, e.g. 100MB, 2h (have to be parsed manually)
-	{tokenTypeVAL, regexp.MustCompile(`(^[0-9][A-Za-z0-9_.-]*)|(^"[^"]*")|(^/[^/]/(a-z)*)`)},
+	{tokenTypeVAL, regexp.MustCompile(`(^[0-9][A-Za-z0-9_.-]*)|(^"[^"]*")|(^/[^/]*/(a-z)*)`)},
 	{tokenTypeLPAR, regexp.MustCompile(`^\(`)},
 	{tokenTypeRPAR, regexp.MustCompile(`^\)`)},
 }
