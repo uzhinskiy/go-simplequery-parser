@@ -27,7 +27,7 @@ func ExampleParse() {
 	//         "bar",
 	//       },
 	//       VAL {
-	//         "x",
+	//         "\"x\"",
 	//       },
 	//     },
 	//     NOT {
@@ -36,7 +36,7 @@ func ExampleParse() {
 	//           "baz",
 	//         },
 	//         VAL {
-	//           "y",
+	//           "\"y\"",
 	//         },
 	//       },
 	//     },

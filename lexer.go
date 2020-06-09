@@ -3,7 +3,6 @@ package simplequery
 import (
 	"fmt"
 	"regexp"
-	"strings"
 )
 
 type tokenType int8
@@ -59,7 +58,9 @@ var tokenDefs = []tokenDefinition{
 	{tokenTypeOR, regexp.MustCompile(`^(?i)or`)},
 	{tokenTypeNOT, regexp.MustCompile(`^(?i)not`)},
 	{tokenTypeID, regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_.-]*`)},
-	{tokenTypeVAL, regexp.MustCompile(`(^[0-9][A-Za-z0-9_.-]*)|(^"[^"]*")`)},
+	// tokenTypeVAL supports multiple types of values, e.g. integers, strings that are wrapped with ", regex that are wrapped with /
+	// and integers with string suffix, e.g. 100MB, 2h (have to be parsed manually)
+	{tokenTypeVAL, regexp.MustCompile(`(^[0-9/][A-Za-z0-9_.-]*)|(^"[^"]*")`)},
 	{tokenTypeLPAR, regexp.MustCompile(`^\(`)},
 	{tokenTypeRPAR, regexp.MustCompile(`^\)`)},
 }
@@ -82,13 +83,9 @@ recognize:
 			match := tokenDef.definition.FindStringSubmatchIndex(condition)
 			if match != nil {
 				if tokenDef.tokenType != tokenTypeNONE {
-					matchString := condition[match[0]:match[1]]
-					if tokenDef.tokenType == tokenTypeVAL && strings.HasPrefix(matchString, `"`) && strings.HasSuffix(matchString, `"`) {
-						matchString = matchString[1 : len(matchString)-1]
-					}
 					tokens = append(tokens, token{
 						tokenType: tokenDef.tokenType,
-						matched:   matchString,
+						matched:   condition[match[0]:match[1]],
 						pos:       pos + match[0],
 					})
 				}

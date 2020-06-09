@@ -26,7 +26,7 @@ AND {
         "bar",
       },
       VAL {
-        "x",
+        "\"x\"",
       },
     },
     NOT {
@@ -35,7 +35,7 @@ AND {
           "baz",
         },
         VAL {
-          "y",
+          "\"y\"",
         },
       },
     },
@@ -56,7 +56,10 @@ func Match(node Node, data <your data>) bool {
         return !Match(n.Node, data)
     ...
     case EQ:
-        return n.Note1.NodeValue == n.Note2.NodeValue
+        id, _ := n.Node1.(ID)
+        raw, _ := n.Node2.(VAL)
+        val := ... // parse raw as string, int, regex, ...
+        return data.GetValue(id) == val
     case LT:
         ....
     ....

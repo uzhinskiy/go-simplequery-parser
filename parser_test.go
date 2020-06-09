@@ -26,6 +26,7 @@ func Example_parse() {
 	lexAndParse("X <= 5")
 	lexAndParse("NOT X = 5")
 	lexAndParse("NOT (X = 10 AND Y = 11)")
+	lexAndParse("5 OR 6")
 	// Output:
 	// EQ{ID{"X"},VAL{"5"}}
 	// AND{EQ{ID{"X"},VAL{"5"}},EQ{ID{"Y"},VAL{"6"}}}
@@ -35,4 +36,5 @@ func Example_parse() {
 	// LTE{ID{"X"},VAL{"5"}}
 	// NOT{EQ{ID{"X"},VAL{"5"}}}
 	// NOT{AND{EQ{ID{"X"},VAL{"10"}},EQ{ID{"Y"},VAL{"11"}}}}
+	// OR{VAL{"5"},VAL{"6"}}
 }
