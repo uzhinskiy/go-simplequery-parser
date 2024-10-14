@@ -34,6 +34,7 @@ type (
 	GT  struct{ twoSubNodes }
 	GTE struct{ twoSubNodes }
 	EQ  struct{ twoSubNodes }
+	SET  struct{ twoSubNodes }
 	NE  struct{ twoSubNodes }
 	ID  struct{ valueNode }
 	VAL struct{ valueNode }
@@ -47,6 +48,7 @@ func (n LTE) String() string { return fmt.Sprintf("LTE{%s,%s}", n.node1, n.node2
 func (n GT) String() string  { return fmt.Sprintf("GT{%s,%s}", n.node1, n.node2) }
 func (n GTE) String() string { return fmt.Sprintf("GTE{%s,%s}", n.node1, n.node2) }
 func (n EQ) String() string  { return fmt.Sprintf("EQ{%s,%s}", n.node1, n.node2) }
+func (n SET) String() string  { return fmt.Sprintf("SET{%s,%s}", n.node1, n.node2) }
 func (n NE) String() string  { return fmt.Sprintf("NE{%s,%s}", n.node1, n.node2) }
 func (n ID) String() string  { return fmt.Sprintf("ID{%q}", n.nodeValue) }
 func (n VAL) String() string { return fmt.Sprintf("VAL{%q}", n.nodeValue) }
@@ -97,6 +99,7 @@ func parse(tokens []token) (Node, error) {
 		tokenTypeID,
 		tokenTypeVAL,
 		tokenTypeEQ,
+		tokenTypeSET,
 		tokenTypeNE,
 		tokenTypeGT,
 		tokenTypeGTE,
@@ -144,6 +147,8 @@ func parse(tokens []token) (Node, error) {
 						switch tokenType {
 						case tokenTypeEQ:
 							res[i] = EQ{n}
+						case tokenTypeSET:
+							res[i] = SET{n}
 						case tokenTypeNE:
 							res[i] = NE{n}
 						case tokenTypeGT:
