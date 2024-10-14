@@ -49,6 +49,7 @@ type tokenDefinition struct {
 var tokenDefs = []tokenDefinition{
 	{tokenTypeNONE, regexp.MustCompile(`^[\s\r\n]+`)},
 	{tokenTypeEQ, regexp.MustCompile(`^=`)},
+	{tokenTypeSET, regexp.MustCompile(`^:`)},
 	{tokenTypeNE, regexp.MustCompile(`^!=`)},
 	{tokenTypeLTE, regexp.MustCompile(`^<=`)},
 	{tokenTypeLT, regexp.MustCompile(`^<`)},
