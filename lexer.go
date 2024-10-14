@@ -17,6 +17,7 @@ const (
 	tokenTypeLPAR
 	tokenTypeRPAR
 	tokenTypeEQ
+	tokenTypeSET
 	tokenTypeNE
 	tokenTypeLT
 	tokenTypeLTE
@@ -34,6 +35,7 @@ var tokenTypeString = map[tokenType]string{
 	tokenTypeLPAR: "LPAR",
 	tokenTypeRPAR: "RPAR",
 	tokenTypeEQ:   "EQ",
+	tokenTypeSET:  "SET",
 	tokenTypeNE:   "NE",
 	tokenTypeLT:   "LT",
 	tokenTypeLTE:  "LTE",
